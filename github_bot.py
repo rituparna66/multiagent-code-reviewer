@@ -1,27 +1,28 @@
-from github import Github
 import os
+import requests
+from dotenv import load_dotenv
 
+load_dotenv()
 
-def analyze_pull_request(repo_name, pr_number, graph):
-    token = os.getenv("GITHUB_TOKEN")
-    g = Github(token)
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-    repo = g.get_repo(repo_name)
-    pr = repo.get_pull(pr_number)
+OWNER = "rituparna66"
+REPO = "sebi-rbi-kyc-compliance"
+PR_NUMBER = 1  # change to your PR number
 
-    all_results = []
+url = f"https://api.github.com/repos/{OWNER}/{REPO}/pulls/{PR_NUMBER}/files"
 
-    for file in pr.get_files():
-        if file.filename.endswith(".py"):
-            contents = repo.get_contents(file.filename, ref=pr.head.sha)
-            code = contents.decoded_content.decode("utf-8")
+headers = {
+    "Authorization": f"token {GITHUB_TOKEN}",
+    "Accept": "application/vnd.github.v3+json"
+}
 
-            result = graph.invoke({
-                "file_path": file.filename,
-                "results": []
-            })
+response = requests.get(url, headers=headers)
 
-            if isinstance(result, dict):
-                all_results.append(result)
+files = response.json()
 
-    return all_results
+for file in files:
+    print("FILE:", file["filename"])
+    print("PATCH:")
+    print(file["patch"])
+    print("-" * 80)
