@@ -1,56 +1,88 @@
 # 🤖 Multi-Agent Code Review System
 
-A fintech-grade, AI-powered code review pipeline that automatically analyzes Python code for **security vulnerabilities**, **performance issues**, and **code quality** using a multi-agent LangGraph workflow.
+> An AI-powered, multi-agent code review pipeline that automatically analyzes Python code for **security vulnerabilities**, **performance issues**, and **code quality** — adaptable to any domain including fintech, healthtech, SaaS, and more.
+
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-Workflow-FF6B35?style=for-the-badge)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?style=for-the-badge&logo=openai&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-Input (File / GitHub PR)
-        │
-        ▼
-┌─────────────────────────────────────┐
-│           LangGraph Workflow         │
-│                                     │
-│  load_code → code_agent             │
-│                  ↓                  │
-│           security_agent            │
-│                  ↓                  │
-│          performance_agent          │
-│                  ↓                  │
-│             aggregate               │
-└─────────────────────────────────────┘
-        │
-        ▼
-  Structured Report (JSON + UI)
+╔══════════════════════════════════════════════════════════════╗
+║                      INPUT LAYER                             ║
+║                                                              ║
+║     📄 Python File            🐙 GitHub Pull Request         ║
+║      (Streamlit UI)             (github_bot.py)              ║
+╚═══════════════════════╦══════════════════════════════════════╝
+                        ║
+                        ▼
+╔══════════════════════════════════════════════════════════════╗
+║                  LANGGRAPH WORKFLOW                          ║
+║                                                              ║
+║        ┌─────────────────┐                                  ║
+║        │   load_code     │  ← reads file into state         ║
+║        └────────┬────────┘                                  ║
+║                 │                                            ║
+║                 ▼                                            ║
+║        ┌─────────────────┐                                  ║
+║        │ 🔍  CodeAgent   │  ← smells, naming, structure     ║
+║        └────────┬────────┘                                  ║
+║                 │                                            ║
+║                 ▼                                            ║
+║        ┌─────────────────┐                                  ║
+║        │ 🔐  SecAgent    │  ← secrets, injections, exposure ║
+║        └────────┬────────┘                                  ║
+║                 │                                            ║
+║                 ▼                                            ║
+║        ┌─────────────────┐                                  ║
+║        │ ⚡  PerfAgent   │  ← loops, complexity, memory     ║
+║        └────────┬────────┘                                  ║
+║                 │                                            ║
+║                 ▼                                            ║
+║        ┌─────────────────┐                                  ║
+║        │  📊  Aggregate  │  ← dedup, rank, summarise        ║
+║        └────────┬────────┘                                  ║
+╚═════════════════╬════════════════════════════════════════════╝
+                  ║
+                  ▼
+╔══════════════════════════════════════════════════════════════╗
+║                     OUTPUT LAYER                             ║
+║                                                              ║
+║    🖥️  Streamlit Dashboard       📄 review_report.json       ║
+╚══════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## 🧠 Agents
+## 🧠 Agent Breakdown
 
-| Agent | Role | Checks |
-|-------|------|--------|
-| `CodeAnalyzer` | Code quality | Smells, naming, docstrings, structure |
-| `SecurityAgent` | Security audit | Hardcoded secrets, PCI-DSS, PAN/IBAN, injection, encryption |
-| `PerformanceAgent` | Performance | Loops, complexity, memory, redundant ops |
+```
+┌──────────────────────┬──────────────────┬─────────────────────────────────────┐
+│ Agent                │ Role             │ What It Catches                     │
+├──────────────────────┼──────────────────┼─────────────────────────────────────┤
+│ 🔍 CodeAnalyzer      │ Code Quality     │ Smells, naming, docstrings, struct  │
+│ 🔐 SecurityAgent     │ Security Audit   │ Secrets, injections, unsafe storage │
+│ ⚡ PerformanceAgent  │ Performance      │ Loops, complexity, memory, redund.  │
+└──────────────────────┴──────────────────┴─────────────────────────────────────┘
+```
 
 ---
 
 ## ⚙️ Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![LangGraph](https://img.shields.io/badge/LangGraph-0.1+-orange)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-green)
-![Streamlit](https://img.shields.io/badge/Streamlit-UI-red)
-![Pydantic](https://img.shields.io/badge/Pydantic-v2-purple)
-
-- **LangGraph** — stateful multi-agent orchestration
-- **OpenAI GPT-4o-mini** — LLM backbone for all agents
-- **Streamlit** — interactive web UI
-- **Pydantic v2** — structured output validation
-- **GitHub API** — PR-level code review via `github_bot.py`
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| 🧠 Orchestration | LangGraph | Stateful multi-agent workflow |
+| 🤖 LLM | OpenAI GPT-4o-mini | Agent reasoning backbone |
+| 🖥️ UI | Streamlit | Interactive web dashboard |
+| ✅ Validation | Pydantic v2 | Structured output enforcement |
+| 🐙 Integration | GitHub API | PR-level automated review |
 
 ---
 
@@ -58,7 +90,7 @@ Input (File / GitHub PR)
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/YOUR_USERNAME/multiagent-code-reviewer.git
+git clone https://github.com/rituparna66/multiagent-code-reviewer.git
 cd multiagent-code-reviewer
 ```
 
@@ -100,70 +132,91 @@ python github_bot.py <owner> <repo> <pr_number>
 ## 📊 Sample Output
 
 ```
-Summary:
-{'total_issues': 7, 'critical': 0, 'serious': 2, 'moderate': 2, 'low': 3}
+╔══════════════════════════════════════════════╗
+║             REVIEW SUMMARY                  ║
+╠══════════════════════════════════════════════╣
+║  Total Issues : 7                           ║
+║  🔴 Critical  : 0                           ║
+║  🟠 Serious   : 2                           ║
+║  🟡 Moderate  : 2                           ║
+║  🟢 Low       : 3                           ║
+╚══════════════════════════════════════════════╝
 
-Issues:
-  [4] structural_problem  — Hard-coded severity map makes code inflexible
-  [4] performance         — Long string construction may lead to high token usage
-  [3] code_smell          — Stateful variables increase cognitive complexity
-  [3] performance         — Nested loop introduces O(n*m) complexity
-  [2] bad_naming          — Function name too generic
-  [2] performance         — Redundant string splitting
-  [1] missing_docstrings  — Vague docstring on analyze_security
+Issues Found:
+  [5] 🔴 security          — Hardcoded API key detected
+  [4] 🟠 structural        — Hard-coded severity map, inflexible design
+  [4] 🟠 performance       — String construction causes high token usage
+  [3] 🟡 code_smell        — Stateful variables increase complexity
+  [3] 🟡 performance       — Nested loop → O(n×m) complexity
+  [2] 🟢 bad_naming        — Function name too generic
+  [1] 🟢 missing_docstring — Vague docstring on analyze_security
 ```
 
 ---
 
-## 🏦 Fintech-Specific Security Checks
+## 🔐 Security Checks
 
-The `SecurityAgent` is tuned for fintech compliance:
+```
+╔══════════════════════════════════════════════════════════════╗
+║                  SECURITY RULESET                            ║
+╠══════════════════════════════════════════════════════════════╣
+║  🔴 CRITICAL   Hardcoded API keys, tokens, passwords         ║
+║  🔴 CRITICAL   Credentials or secrets in source code         ║
+║  🔴 CRITICAL   Injection vulnerabilities (SQL, shell, prompt)║
+║  🟠 HIGH       Insecure or unencrypted data storage          ║
+║  🟠 HIGH       Exposed file paths or world-readable files    ║
+║  🟡 MEDIUM     Missing access controls or unsafe defaults    ║
+║  🟡 MEDIUM     Unsafe environment variable usage             ║
+║  🟢 LOW        Potential info leakage or risky patterns      ║
+╚══════════════════════════════════════════════════════════════╝
+```
 
-- 🔴 Hardcoded API keys, tokens, passwords
-- 🔴 PAN / card number patterns
-- 🔴 SWIFT / IBAN code exposure
-- 🟠 PCI-DSS violations
-- 🟠 Unencrypted financial data storage
-- 🟡 Missing audit logs for transactions
-- 🟡 Unsafe environment variable usage
-- 🟢 Overly permissive file operations
+> 💡 **Domain Extensible** — Security rules can be extended for specific domains:
+> fintech (PCI-DSS, PAN/IBAN), healthtech (HIPAA, PHI), SaaS (OAuth, rate limits), and more.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-multiagent/
-├── app.py                  # Streamlit UI
-├── main.py                 # CLI entry point
-├── github_bot.py           # GitHub PR reviewer
-├── agents/
-│   ├── code_analyzer.py    # Code quality agent
-│   ├── security_agent.py   # Security audit agent
-│   └── performance_agent.py# Performance agent
-├── graph/
-│   └── workflow.py         # LangGraph orchestration
-├── schemas/
-│   └── issue_schema.py     # Pydantic models
-├── tools/
-│   ├── aggregator.py       # Issue deduplication
-│   ├── file_reader.py      # File I/O
-│   └── patch_parser.py     # Git diff parser
-├── .env.example
-├── requirements.txt
-└── README.md
+multiagent-code-reviewer/
+│
+├── 📄 app.py                    ← Streamlit web UI
+├── 📄 main.py                   ← CLI entry point
+├── 📄 github_bot.py             ← GitHub PR reviewer
+│
+├── 🤖 agents/
+│   ├── code_analyzer.py         ← Code quality agent
+│   ├── security_agent.py        ← Security audit agent
+│   └── performance_agent.py     ← Performance agent
+│
+├── 🔀 graph/
+│   └── workflow.py              ← LangGraph orchestration
+│
+├── 📐 schemas/
+│   └── issue_schema.py          ← Pydantic models
+│
+├── 🛠️  tools/
+│   ├── aggregator.py            ← Issue deduplication & ranking
+│   ├── file_reader.py           ← File I/O
+│   └── patch_parser.py          ← Git diff parser
+│
+├── 📄 .env.example
+├── 📄 requirements.txt
+├── 📄 LICENSE
+└── 📄 README.md
 ```
 
 ---
 
-## 🔒 Security
+## 🔒 Security Best Practices
 
-- API keys are loaded via `.env` — never hardcoded
-- `.env` is excluded via `.gitignore`
+- API keys loaded via `.env` — never hardcoded
+- `.env` excluded via `.gitignore`
 - All secrets managed through `python-dotenv`
 
 ---
 
 ## 📄 License
 
-MIT
+MIT © 2026 Soumadeep
