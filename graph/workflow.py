@@ -13,6 +13,7 @@ class ReviewState(TypedDict):
     code: str
     results: List[AgentOutput]
     final_issues: List[Issue]
+    summary: dict  # ← add this
 
 
 def load_code(state: ReviewState):

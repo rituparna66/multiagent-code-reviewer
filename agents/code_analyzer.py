@@ -67,4 +67,4 @@ Here is the code:
     return AgentOutput.model_validate_json(data)
 
 
-print("DEBUG_TOKEN:", os.getenv("GITHUB_TOKEN"))
+
