@@ -1,6 +1,6 @@
 # 🤖 Multi-Agent Code Review System
 
-> An AI-powered, multi-agent code review pipeline that automatically analyzes Python code for **security vulnerabilities**, **performance issues**, and **code quality** — adaptable to any domain including fintech, healthtech, SaaS, and more.
+> An AI-driven multi-agent code review pipeline engineered for fintech applications, enabling automated detection of security vulnerabilities, performance bottlenecks, and code quality issues while supporting compliance, auditability, and high-stakes transactional systems.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![LangGraph](https://img.shields.io/badge/LangGraph-Workflow-FF6B35?style=for-the-badge)
